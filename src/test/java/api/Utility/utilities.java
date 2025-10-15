@@ -54,15 +54,12 @@ public class utilities {
 		conn.setRequestProperty("Connection", "keep-alive");
 		conn.setRequestProperty("Content-Length", "86");
 		conn.setDoOutput(true);
-
 		try (OutputStream os = conn.getOutputStream()) {
 			byte[] input = body.getBytes("utf-8");
 			os.write(input, 0, input.length);
 		}
-
 		int responseCode = conn.getResponseCode();
-		// System.out.println("Response Code: " + responseCode);
-
+		System.out.println("Response Code: " + responseCode);
 		BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
 		StringBuilder response = new StringBuilder();
 		String responseLine;
@@ -74,26 +71,29 @@ public class utilities {
 		jsonResponseFromAPI = response.toString();
 	}
 
-	public static Object[] processingJsonResponse(Integer rowNumber)
+	public static Object[] processingJsonResponse(Integer rowNumber, String Expected_intent, String Expected_Response)
 			throws JsonMappingException, JsonProcessingException {
 
 		// Parse JSON response
 		jsonResponseMessage jsonrsp = jsonMap.readValue(jsonResponseFromAPI, jsonResponseMessage.class);
-		String response = jsonrsp.getOutput().get(0).getFaq_response().get(0).getMessage();
-		String intent = jsonrsp.getOutput().get(0).getAll_intents().get(0).name;
 		String input = jsonrsp.getQuery_processor().getInput();
-
-		// Debug print
-		System.out.println(
-				"RowNumber: " + rowNumber + " / Input: " + input + " / Intent: " + intent + " / Response: " + response);
-
+		String Actual_intent = jsonrsp.getOutput().get(0).getAll_intents().get(0).name;
+		String Actual_response = jsonrsp.getOutput().get(0).getFaq_response().get(0).getMessage();
+		String Status = "";
+		if (Actual_intent.equalsIgnoreCase(Expected_intent)) {
+			Status = "Pass";
+		} else {
+			Status = "Fail";
+		}
 		// Return as a single row (1D array)
-		Object[] rowData = new Object[4];
+		Object[] rowData = new Object[7];
 		rowData[0] = rowNumber;
 		rowData[1] = input;
-		rowData[2] = intent;
-		rowData[3] = response;
-
+		rowData[2] = Actual_intent;
+		rowData[3] = Expected_intent;
+		rowData[4] = Actual_response;
+		rowData[5] = Expected_Response;
+		rowData[6] = Status;
 		return rowData;
 	}
 

@@ -37,8 +37,31 @@ public class dataReaderUtils {
 		createFile("E:\\Automation\\Automation\\src\\test\\resource\\DataFile.xlsx").close();
 	}
 
-	public static Map<Integer, Map<String, String>> readExcelUtils() throws IOException {
-		Map<Integer, Map<String, String>> dataMaps = new HashMap<>();
+//	public static Map<Integer, Map<String, String>> readExcelUtils() throws IOException {
+//		Map<Integer, Map<String, String>> dataMaps = new HashMap<>();
+//		Workbook workbook = createWorkbook(
+//				createFile("E:\\Automation\\Automation\\src\\test\\resource\\DataFile.xlsx"));
+//		Sheet sheet = getSheet(workbook);
+//		for (int i = 1; i <= sheet.getLastRowNum(); i++) { // skip header row
+//			Row row = sheet.getRow(i);
+//			if (row == null)
+//				continue;
+//			int serialNumber = (int) row.getCell(0).getNumericCellValue();
+//			String key = row.getCell(1).getStringCellValue();
+//			String value = row.getCell(2).getStringCellValue();
+//			Map<String, String> dataMap = new HashMap<>();
+//			dataMap.put(key, value);
+//			dataMaps.put(serialNumber, dataMap);
+//		}
+//		workbook.close();
+//		return dataMaps;
+//	}
+
+	public static Map<Integer, Map<Map<String, String>, Map<String, String>>> readExcelUtils() throws IOException {
+		Map<Integer, Map<Map<String, String>, Map<String, String>>> returnValues = new HashMap<>();
+		Map<Map<String, String>, Map<String, String>> dataMap = new HashMap<>();
+		Map<String, String> data1 = new HashMap<>();
+		Map<String, String> data2 = new HashMap<>();
 		Workbook workbook = createWorkbook(
 				createFile("E:\\Automation\\Automation\\src\\test\\resource\\DataFile.xlsx"));
 		Sheet sheet = getSheet(workbook);
@@ -47,13 +70,17 @@ public class dataReaderUtils {
 			if (row == null)
 				continue;
 			int serialNumber = (int) row.getCell(0).getNumericCellValue();
-			String key = row.getCell(1).getStringCellValue();
-			String value = row.getCell(2).getStringCellValue();
-			Map<String, String> dataMap = new HashMap<>();
-			dataMap.put(key, value);
-			dataMaps.put(serialNumber, dataMap);
+			String ToRun = row.getCell(1).getStringCellValue();
+			String Input = row.getCell(2).getStringCellValue();
+			String Expected_Intent = row.getCell(3).getStringCellValue();
+			String Expected_Response = row.getCell(4).getStringCellValue();
+			data1.put(ToRun, Input);
+			data2.put(Expected_Intent, Expected_Response);
+			dataMap.put(data1, data2);
+			returnValues.put(serialNumber, dataMap);
 		}
 		workbook.close();
-		return dataMaps;
+		return returnValues;
 	}
+
 }
