@@ -54,19 +54,22 @@ public class dataWriteUtils {
 	}
 
 	// ✅ Append a single test result row
-	public static void appendTestResult(Sheet sheet) {
+	public static void excelTestResultFileHeader(Sheet sheet, String S_No, String Input, String Actual_Intent,
+			String Expected_Intent, String Actual_Response, String Expected_Response, String Status) {
 		int lastRow = sheet.getLastRowNum() + 1; // Next empty row
 		Row row = sheet.createRow(lastRow);
-		row.createCell(0).setCellValue("sno");
-		row.createCell(1).setCellValue("input");
-		row.createCell(2).setCellValue("intent");
-		row.createCell(3).setCellValue("response");
+		row.createCell(0).setCellValue(S_No);
+		row.createCell(1).setCellValue(Input);
+		row.createCell(2).setCellValue(Actual_Intent);
+		row.createCell(3).setCellValue(Expected_Intent);
+		row.createCell(4).setCellValue(Actual_Response);
+		row.createCell(5).setCellValue(Expected_Response);
+		row.createCell(6).setCellValue(Status);
 	}
 
 	public static void appendTestResults(Sheet sheet, Object[] rowData) {
 		int lastRow = sheet.getLastRowNum() + 1; // Next empty row
 		Row row = sheet.createRow(lastRow);
-
 		for (int i = 0; i < rowData.length; i++) {
 			if (rowData[i] != null) {
 				row.createCell(i).setCellValue(rowData[i].toString());
